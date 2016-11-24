@@ -8,6 +8,8 @@ class PugixmlConan(ConanFile):
     url = "https://github.com/SteffenL/conan-pugixml"
     license = "MIT"
     settings = "os", "compiler", "build_type", "arch"
+    options = {"shared": [True, False]}
+    default_options = "shared=False"
     generators = "cmake"
     exports = "CMakeLists.txt"
 
@@ -34,6 +36,7 @@ class PugixmlConan(ConanFile):
             self.run("git pull origin %s" % git_branch)
 
     def build(self):
+        shared = "-DBUILD_SHARED_LIBS".format("ON" if self.options.shared else "OFF")
         cmake = CMake(self.settings)
         self.run("cmake . %s" % cmake.command_line)
         self.run("cmake --build . %s" % cmake.build_config)
@@ -41,6 +44,10 @@ class PugixmlConan(ConanFile):
     def package(self):
         self.copy(pattern="*.hpp", dst="include", src="pugixml/src")
         self.copy(pattern="*.lib", dst="lib", src="lib")
+        self.copy(pattern="*.a", dst="lib", src="lib")
+        self.copy(pattern="*.dll", dst="bin", src="lib")
+        self.copy(pattern="*.so*", dst="lib", src="lib")
+        self.copy(pattern="*.dylib*", dst="lib", src="lib")
 
     def package_info(self):
         self.cpp_info.libs = ["pugixml"]
