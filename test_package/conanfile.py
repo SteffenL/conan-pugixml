@@ -20,4 +20,4 @@ class RunConanTestConan(ConanFile):
 
     def test(self):
         os.chdir("bin")
-        self.run("run_conan_test")
+        self.run(os.path.join(".", "run_conan_test"))
