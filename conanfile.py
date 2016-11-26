@@ -36,16 +36,18 @@ class PugixmlConan(ConanFile):
             self.run("git pull origin %s" % git_branch)
 
     def build(self):
-        shared = "-DBUILD_SHARED_LIBS".format("ON" if self.options.shared else "OFF")
         cmake = CMake(self.settings)
-        self.run("cmake . %s" % cmake.command_line)
+        flags = " ".join([
+            "-DBUILD_SHARED_LIBS={0}".format("ON" if self.options.shared else "OFF")
+        ])
+        self.run("cmake . %s %s" % (cmake.command_line, flags))
         self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
         self.copy(pattern="*.hpp", dst="include", src="pugixml/src")
         self.copy(pattern="*.lib", dst="lib", src="lib")
         self.copy(pattern="*.a", dst="lib", src="lib")
-        self.copy(pattern="*.dll", dst="bin", src="lib")
+        self.copy(pattern="*.dll", dst="bin", src="bin")
         self.copy(pattern="*.so*", dst="lib", src="lib")
         self.copy(pattern="*.dylib*", dst="lib", src="lib")
 
