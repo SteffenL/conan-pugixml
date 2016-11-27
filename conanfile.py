@@ -18,18 +18,17 @@ class PugixmlConan(ConanFile):
 
     def source(self):
         git_branch = "v" + self.version
-        
+
+        if not os.path.exists("pugixml"):
+            os.mkdir("pugixml")
+        os.chdir("pugixml")
+
         if sys.version_info.major >= 3:
-            self.run("git clone --depth 1 --branch {0} {1}".format(git_branch, self.git_repository_url))
-            os.chdir("pugixml")
+            self.run("git clone --depth 1 --branch {0} {1} .".format(git_branch, self.git_repository_url))
         else:
             # Workaround for Python versions earlier than 3.0:
             # Instead of cloning the whole repository, we pull only what we need.
             # The reason is that pugixml includes test-files with unicode characters in the path, which causes problems in earlier versions of Python.
-
-            if not os.path.exists("pugixml"):
-                os.mkdir("pugixml")
-            os.chdir("pugixml")
 
             self.run("git init")
             self.run("git remote add origin %s" % self.git_repository_url)
