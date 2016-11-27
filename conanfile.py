@@ -39,7 +39,7 @@ class PugixmlConan(ConanFile):
 
     def build(self):
         if self.options.shared and self.settings.compiler == "Visual Studio":
-            tools.replace_in_file("src/pugiconfig.hpp", "#endif", """
+            tools.replace_in_file("pugixml/src/pugiconfig.hpp", "#endif", """
 #ifdef _DLL
     #define PUGIXML_API __declspec(dllexport)
 #else
