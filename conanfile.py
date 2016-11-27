@@ -37,6 +37,7 @@ class PugixmlConan(ConanFile):
             self.run("echo src>>.git/info/sparse-checkout")
             self.run("git pull origin %s" % git_branch)
 
+    def build(self):
         if self.options.shared and self.settings.compiler == "Visual Studio":
             tools.replace_in_file("src/pugiconfig.hpp", "#endif", """
 #ifdef _DLL
@@ -48,7 +49,6 @@ class PugixmlConan(ConanFile):
 #endif
 """)
 
-    def build(self):
         cmake = CMake(self.settings)
         flags = " ".join([
             "-DBUILD_SHARED_LIBS={0}".format("ON" if self.options.shared else "OFF")

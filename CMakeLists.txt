@@ -20,4 +20,10 @@ endif()
 
 add_library(${TARGET_NAME} ${LINK_TYPE} ${SOURCES})
 
+set_target_properties(${TARGET_NAME} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 target_include_directories(${TARGET_NAME} PRIVATE "pugixml/src")
