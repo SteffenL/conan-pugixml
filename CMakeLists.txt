@@ -20,11 +20,4 @@ endif()
 
 add_library(${TARGET_NAME} ${LINK_TYPE} ${SOURCES})
 
-if(BUILD_SHARED_LIBS)
-    # https://github.com/zeux/pugixml/issues/113
-    if(MSVC)
-        set_property(TARGET ${TARGET_NAME} APPEND PROPERTY COMPILE_DEFINITIONS "PUGIXML_API=__declspec(dllexport)")
-    endif()
-endif()
-
 target_include_directories(${TARGET_NAME} PRIVATE "pugixml/src")

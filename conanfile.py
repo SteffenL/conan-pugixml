@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake
+from conans import tools
 import os
 import sys
 
@@ -20,6 +21,7 @@ class PugixmlConan(ConanFile):
         
         if sys.version_info.major >= 3:
             self.run("git clone --depth 1 --branch {0} {1}".format(git_branch, self.git_repository_url))
+            os.chdir("pugixml")
         else:
             # Workaround for Python versions earlier than 3.0:
             # Instead of cloning the whole repository, we pull only what we need.
@@ -34,6 +36,17 @@ class PugixmlConan(ConanFile):
             self.run("git config core.sparsecheckout true")
             self.run("echo src>>.git/info/sparse-checkout")
             self.run("git pull origin %s" % git_branch)
+
+        if self.options.shared and self.settings.compiler == "Visual Studio":
+            tools.replace_in_file("src/pugiconfig.hpp", "#endif", """
+#ifdef _DLL
+    #define PUGIXML_API __declspec(dllexport)
+#else
+    #define PUGIXML_API __declspec(dllimport)
+#endif
+
+#endif
+""")
 
     def build(self):
         cmake = CMake(self.settings)
